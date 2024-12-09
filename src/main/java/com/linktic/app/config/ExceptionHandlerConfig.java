@@ -6,6 +6,7 @@ import com.linktic.app.exception.ExportFileError;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.ValidationException;
 import lombok.extern.log4j.Log4j2;
+import org.postgresql.util.PSQLException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -111,6 +112,17 @@ public class ExceptionHandlerConfig extends ResponseEntityExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, errorMessage);
         problemDetail.setTitle("Not found Error");
         problemDetail.setType(URI.create("not-found-error"));
+        problemDetail.setProperty("timestamp", Instant.now());
+        log.error(problemDetail);
+        return problemDetail;
+
+    }
+    @ExceptionHandler(PSQLException.class)
+    public ProblemDetail handlePSQLException(PSQLException ex){
+        String errorMessage = ex.getMessage();
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, errorMessage);
+        problemDetail.setTitle("Psql Error");
+        problemDetail.setType(URI.create("psql-error"));
         problemDetail.setProperty("timestamp", Instant.now());
         log.error(problemDetail);
         return problemDetail;

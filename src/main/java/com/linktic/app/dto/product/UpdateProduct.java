@@ -23,6 +23,7 @@ public class UpdateProduct {
     @Size(min = 1, max = 100)
     private String name;
     @DecimalMin("0.0")
+    @NotNull
     private Double price;
     private UpdateBase64Data imagen;
     @NotBlank

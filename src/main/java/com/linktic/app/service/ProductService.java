@@ -62,7 +62,7 @@ public class ProductService implements CrudService<Product,Long, CreateProduct, 
 
     @Override
     public ProductDto update(@NonNull UpdateProduct dto) {
-
+        validator.validate(dto);
         Product product=productRepository.findById(dto.getId())
                 .orElseThrow(()-> new EntityNotFoundException(Product.class,dto.getId()));
 
